@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Horses</title>
+  <style>
+    :root {
+      --sidebar-width: 84px;
+      --bg: #f5f6f8;
+      --sidebar: #111827;
+      --sidebar-border: #263244;
+      --text: #111827;
+      --muted: #6b7280;
+      --active: #ffffff;
+      --active-bg: #2563eb;
+      --hover-bg: #1f2937;
+      --focus: #93c5fd;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      height: 100%;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px 6px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--sidebar-border);
+    }
+
+    .sidebar-title {
+      margin: 0 2px 10px;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-button {
+      width: 100%;
+      min-height: 44px;
+      border: 0;
+      border-radius: 6px;
+      padding: 0 7px;
+      background: transparent;
+      color: #d1d5db;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .nav-button:hover {
+      background: var(--hover-bg);
+      color: var(--active);
+    }
+
+    .nav-button:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .nav-button[aria-current="page"] {
+      background: var(--active-bg);
+      color: var(--active);
+    }
+
+    .content {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      background: #ffffff;
+    }
+
+    .viewer {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #ffffff;
+    }
+
+    .status {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      max-width: min(420px, calc(100% - 28px));
+      border-radius: 6px;
+      padding: 7px 10px;
+      background: rgba(17, 24, 39, 0.82);
+      color: #ffffff;
+      font-size: 13px;
+      line-height: 1.3;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .status.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --sidebar-width: 84px;
+      }
+
+      .sidebar {
+        padding: 14px 6px;
+      }
+
+      .sidebar-title {
+        font-size: 15px;
+      }
+
+      .nav-button {
+        min-height: 42px;
+        padding: 0 7px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="sidebar" aria-label="Race views">
+      <h1 class="sidebar-title">Dildex v2</h1>
+      <div class="nav-list">
+        <button class="nav-button" type="button" data-view="card">Card</button>
+        <button class="nav-button" type="button" data-view="scatter">Scatter</button>
+      </div>
+    </nav>
+    <section class="content">
+      <iframe class="viewer" id="viewer" title="Selected race view"></iframe>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const views = {
+      card: {
+        label: "Card",
+        url: "https://richsdixon.github.io/horses/todays_races.html"
+      },
+      scatter: {
+        label: "Scatter",
+        url: "https://richsdixon.github.io/horses/dildex_scatter_today.html"
+      }
+    };
+
+    const viewer = document.getElementById("viewer");
+    const status = document.getElementById("status");
+    const buttons = Array.from(document.querySelectorAll(".nav-button"));
+    let statusTimer;
+
+    function cacheBustedUrl(rawUrl) {
+      const url = new URL(rawUrl, window.location.href);
+      url.searchParams.set("refresh", Date.now().toString());
+      return url.toString();
+    }
+
+    function showStatus(message) {
+      clearTimeout(statusTimer);
+      status.textContent = message;
+      status.classList.add("is-visible");
+      statusTimer = window.setTimeout(() => {
+        status.classList.remove("is-visible");
+      }, 1800);
+    }
+
+    function setActiveButton(viewName) {
+      buttons.forEach((button) => {
+        const isActive = button.dataset.view === viewName;
+        button.setAttribute("aria-current", isActive ? "page" : "false");
+      });
+    }
+
+    function loadView(viewName) {
+      const view = views[viewName] || views.card;
+      setActiveButton(viewName);
+      viewer.src = cacheBustedUrl(view.url);
+      window.history.replaceState(null, "", `#${viewName}`);
+      showStatus(`${view.label} refreshed`);
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => loadView(button.dataset.view));
+    });
+
+    const initialView = window.location.hash.slice(1);
+    loadView(views[initialView] ? initialView : "card");
+  </script>
+</body>
+</html>
