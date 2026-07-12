@@ -91,21 +91,40 @@ function interpolateColor(c1, c2, t) {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
-function dildexColor(value) {
-    const blue = [31, 78, 121];
-    const grey = [240, 240, 240];
-    const red = [130, 20, 20];
-    const v = Math.max(0, Math.min(dildexMax, value));
-    if (v <= 1.5) return interpolateColor(blue, grey, v / 1.5);
-    return interpolateColor(grey, red, (v - 1.5) / 1.5);
+function jetColor(value) {
+    const scaleMin = 0.2;
+    const scaleMax = 0.8;
+
+    const anchors = [
+        { t: 0.00, c: [0, 0, 140] },
+        { t: 0.20, c: [0, 180, 255] },
+        { t: 0.40, c: [0, 180, 0] },
+        { t: 0.60, c: [255, 235, 0] },
+        { t: 0.80, c: [255, 130, 0] },
+        { t: 1.00, c: [190, 0, 0] }
+    ];
+
+    const clipped = Math.max(scaleMin, Math.min(scaleMax, value));
+    const t = (clipped - scaleMin) / (scaleMax - scaleMin);
+
+    for (let i = 0; i < anchors.length - 1; i++) {
+        if (t >= anchors[i].t && t <= anchors[i + 1].t) {
+            const localT = (t - anchors[i].t) / (anchors[i + 1].t - anchors[i].t);
+            return interpolateColor(anchors[i].c, anchors[i + 1].c, localT);
+        }
+    }
+
+    return "rgb(" + anchors[anchors.length - 1].c.join(",") + ")";
 }
 
 function renderDildex(value) {
     const num = parseFloat(value);
     if (isNaN(num)) return "";
+
     const clipped = Math.max(0, Math.min(dildexMax, num));
     const pct = (clipped / dildexMax) * 100;
-    const color = dildexColor(clipped);
+    const color = jetColor(num);
+
     return `
         <div class="dildex-wrap">
             <div class="dildex-bar-bg">
@@ -121,13 +140,16 @@ function getD1v2Range() {
     const maxInput = document.getElementById("d1v2Max");
     let minValue = parseFloat(minInput.value);
     let maxValue = parseFloat(maxInput.value);
+
     if (minValue > maxValue) {
         if (document.activeElement === minInput) maxValue = minValue;
         else minValue = maxValue;
     }
+
     minInput.value = minValue.toFixed(3);
     maxInput.value = maxValue.toFixed(3);
     document.getElementById("d1v2Text").textContent = `${minValue.toFixed(3)} - ${maxValue.toFixed(3)}`;
+
     return [minValue, maxValue];
 }
 
@@ -137,6 +159,7 @@ function renderTable() {
     const topHJTOnly = document.getElementById("topHJTOnly").checked;
     const tbody = document.querySelector("#raceTable tbody");
     tbody.innerHTML = "";
+
     const filteredRows = rows.filter(row => {
         const raceOk = selected.length === 0 || selected.includes(row.race_filter);
         const d1v2 = parseFloat(row.Dildex1vs2);
@@ -147,26 +170,33 @@ function renderTable() {
         const topHJTOk = !topHJTOnly || hjtRank === 1;
         return raceOk && d1v2Ok && topHJTOk;
     });
+
     let currentRace = null;
     let raceIndex = -1;
+
     filteredRows.forEach(row => {
         if (row.race_filter !== currentRace) {
             currentRace = row.race_filter;
             raceIndex += 1;
         }
+
         const tr = document.createElement("tr");
         tr.className = raceIndex % 2 === 0 ? "race-even" : "race-odd";
+
         displayCols.forEach(col => {
             const td = document.createElement("td");
             td.classList.add(`col-${col}`);
+
             if (col === "Dildex") {
                 td.innerHTML = renderDildex(row[col]);
             } else {
                 td.textContent = row[col];
                 if (!isNaN(parseFloat(row[col])) && isFinite(row[col])) td.classList.add("num");
             }
+
             tr.appendChild(td);
         });
+
         tbody.appendChild(tr);
     });
 }
@@ -181,6 +211,7 @@ document.getElementById("raceSelect").addEventListener("change", renderTable);
 document.getElementById("d1v2Min").addEventListener("input", renderTable);
 document.getElementById("d1v2Max").addEventListener("input", renderTable);
 document.getElementById("topHJTOnly").addEventListener("change", renderTable);
+
 renderTable();
 </script>
 </body>

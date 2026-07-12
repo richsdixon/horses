@@ -259,22 +259,8 @@ Today's Races
 <label>Perc:</label>
 
 <div class="range-wrap">
-<input
-    id="percMin"
-    type="range"
-    min="0"
-    max="100"
-    step="1"
-    value="0"
->
-<input
-    id="percMax"
-    type="range"
-    min="0"
-    max="100"
-    step="1"
-    value="100"
->
+<input id="percMin" type="range" min="0" max="100" step="1" value="0">
+<input id="percMax" type="range" min="0" max="100" step="1" value="100">
 </div>
 
 <span id="percText">0 - 100</span>
@@ -307,42 +293,45 @@ const displayCols = ["Course", "Time", "Class", "Dist", "Horse", "Run", "Odds", 
 const dildexMax = 1.0;
 
 function interpolateColor(c1, c2, t) {
-    const r = Math.round(
-        c1[0] + (c2[0] - c1[0]) * t
-    );
-    const g = Math.round(
-        c1[1] + (c2[1] - c1[1]) * t
-    );
-    const b = Math.round(
-        c1[2] + (c2[2] - c1[2]) * t
-    );
-
+    const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+    const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+    const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
     return `rgb(${r}, ${g}, ${b})`;
 }
 
-function dildexColor(value) {
-    const blue = [31, 78, 121];
-    const grey = [240, 240, 240];
-    const red = [130, 20, 20];
+function jetColor(value) {
+    const scaleMin = 0.2;
+    const scaleMax = 0.8;
 
-    const v = Math.max(
-        0,
-        Math.min(dildexMax, value)
-    );
+    const anchors = [
+        { t: 0.00, c: [0, 0, 140] },
+        { t: 0.20, c: [0, 180, 255] },
+        { t: 0.40, c: [0, 180, 0] },
+        { t: 0.60, c: [255, 235, 0] },
+        { t: 0.80, c: [255, 130, 0] },
+        { t: 1.00, c: [190, 0, 0] }
+    ];
 
-    if (v <= 1.5) {
-        return interpolateColor(
-            blue,
-            grey,
-            v / 1.5
-        );
+    const clipped = Math.max(scaleMin, Math.min(scaleMax, value));
+    const t = (clipped - scaleMin) / (scaleMax - scaleMin);
+
+    for (let i = 0; i < anchors.length - 1; i++) {
+        if (t >= anchors[i].t && t <= anchors[i + 1].t) {
+            const localT = (
+                t - anchors[i].t
+            ) / (
+                anchors[i + 1].t - anchors[i].t
+            );
+
+            return interpolateColor(
+                anchors[i].c,
+                anchors[i + 1].c,
+                localT
+            );
+        }
     }
 
-    return interpolateColor(
-        grey,
-        red,
-        (v - 1.5) / 1.5
-    );
+    return "rgb(" + anchors[anchors.length - 1].c.join(",") + ")";
 }
 
 function renderDildex(value) {
@@ -352,16 +341,9 @@ function renderDildex(value) {
         return "";
     }
 
-    const clipped = Math.max(
-        0,
-        Math.min(dildexMax, num)
-    );
-
-    const pct = (
-        clipped / dildexMax
-    ) * 100;
-
-    const color = dildexColor(clipped);
+    const clipped = Math.max(0, Math.min(dildexMax, num));
+    const pct = (clipped / dildexMax) * 100;
+    const color = jetColor(num);
 
     return `
         <div class="dildex-wrap">
@@ -382,15 +364,8 @@ function getPercRange() {
     const minInput = document.getElementById("percMin");
     const maxInput = document.getElementById("percMax");
 
-    let minPerc = parseInt(
-        minInput.value,
-        10
-    );
-
-    let maxPerc = parseInt(
-        maxInput.value,
-        10
-    );
+    let minPerc = parseInt(minInput.value, 10);
+    let maxPerc = parseInt(maxInput.value, 10);
 
     if (minPerc > maxPerc) {
         if (document.activeElement === minInput) {
@@ -403,37 +378,22 @@ function getPercRange() {
     minInput.value = minPerc;
     maxInput.value = maxPerc;
 
-    document.getElementById(
-        "percText"
-    ).textContent = `${minPerc} - ${maxPerc}`;
+    document.getElementById("percText").textContent = `${minPerc} - ${maxPerc}`;
 
-    return [
-        minPerc,
-        maxPerc
-    ];
+    return [minPerc, maxPerc];
 }
 
 function renderTable() {
     const selected = Array.from(
-        document.getElementById(
-            "raceSelect"
-        ).selectedOptions
+        document.getElementById("raceSelect").selectedOptions
     ).map(option => option.value);
 
     const [minPerc, maxPerc] = getPercRange();
 
-    const topDildexOnly = document.getElementById(
-        "topDildexOnly"
-    ).checked;
+    const topDildexOnly = document.getElementById("topDildexOnly").checked;
+    const topHJTOnly = document.getElementById("topHJTOnly").checked;
 
-    const topHJTOnly = document.getElementById(
-        "topHJTOnly"
-    ).checked;
-
-    const tbody = document.querySelector(
-        "#raceTable tbody"
-    );
-
+    const tbody = document.querySelector("#raceTable tbody");
     tbody.innerHTML = "";
 
     const filteredRows = rows.filter(row => {
@@ -448,18 +408,14 @@ function renderTable() {
             ? minPerc === 0 && maxPerc === 100
             : perc >= minPerc && perc <= maxPerc;
 
-        const dildexRank = parseFloat(
-            row.DildexRank
-        );
+        const dildexRank = parseFloat(row.DildexRank);
 
         const topDildexOk = (
             !topDildexOnly
             || dildexRank === 1
         );
 
-        const hjtRank = parseFloat(
-            row.H_JT_Rank
-        );
+        const hjtRank = parseFloat(row.H_JT_Rank);
 
         const topHJTOk = (
             !topHJTOnly
@@ -493,15 +449,10 @@ function renderTable() {
 
         displayCols.forEach(col => {
             const td = document.createElement("td");
-
-            td.classList.add(
-                `col-${col}`
-            );
+            td.classList.add(`col-${col}`);
 
             if (col === "Dildex") {
-                td.innerHTML = renderDildex(
-                    row[col]
-                );
+                td.innerHTML = renderDildex(row[col]);
             } else {
                 td.textContent = row[col];
 
@@ -521,53 +472,20 @@ function renderTable() {
 }
 
 function clearFilter() {
-    const select = document.getElementById(
-        "raceSelect"
-    );
+    const select = document.getElementById("raceSelect");
 
-    Array.from(
-        select.options
-    ).forEach(option => {
+    Array.from(select.options).forEach(option => {
         option.selected = false;
     });
 
     renderTable();
 }
 
-document.getElementById(
-    "raceSelect"
-).addEventListener(
-    "change",
-    renderTable
-);
-
-document.getElementById(
-    "percMin"
-).addEventListener(
-    "input",
-    renderTable
-);
-
-document.getElementById(
-    "percMax"
-).addEventListener(
-    "input",
-    renderTable
-);
-
-document.getElementById(
-    "topDildexOnly"
-).addEventListener(
-    "change",
-    renderTable
-);
-
-document.getElementById(
-    "topHJTOnly"
-).addEventListener(
-    "change",
-    renderTable
-);
+document.getElementById("raceSelect").addEventListener("change", renderTable);
+document.getElementById("percMin").addEventListener("input", renderTable);
+document.getElementById("percMax").addEventListener("input", renderTable);
+document.getElementById("topDildexOnly").addEventListener("change", renderTable);
+document.getElementById("topHJTOnly").addEventListener("change", renderTable);
 
 renderTable();
 </script>
