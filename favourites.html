@@ -1,0 +1,187 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Favourites - 2026-07-12</title>
+<style>
+@font-face { font-family: Volte; src: url("file:///C:/Users/richs/AppData/Local/Microsoft/Windows/Fonts/Volte-Regular.otf"); }
+body { font-family: Volte, Arial, sans-serif; margin: 18px; color: #222; }
+h1 { margin: 0 0 4px 0; font-size: 18px; line-height: 1.1; }
+.title-date { margin-left: 8px; color: #555; font-size: 18px; font-weight: bold; }
+.controls { margin-bottom: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+select { min-width: 300px; height: 110px; font-family: Volte, Arial, sans-serif; }
+button { font-family: Volte, Arial, sans-serif; padding: 6px 10px; cursor: pointer; }
+.perc-filter { margin: 0 0 10px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.range-wrap { position: relative; width: 260px; height: 22px; }
+.range-wrap input[type="range"] { position: absolute; left: 0; top: 0; width: 260px; margin: 0; pointer-events: none; accent-color: #444; }
+.range-wrap input[type="range"]::-webkit-slider-thumb { pointer-events: auto; cursor: pointer; }
+.range-wrap input[type="range"]::-moz-range-thumb { pointer-events: auto; cursor: pointer; }
+#d1v2Text { width: 92px; text-align: right; font-variant-numeric: tabular-nums; }
+.top-rank-filter { display: flex; align-items: center; gap: 4px; margin-left: 8px; }
+.top-rank-filter input { margin: 0; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: auto; font-size: 11px; table-layout: fixed; }
+th, td { border: 1px solid #ddd; padding: 2px 3px; text-align: left; line-height: 1.08; white-space: nowrap; }
+th { background: #f2f2f2; position: sticky; top: 0; }
+tr.race-even { background: #ffffff; }
+tr.race-odd { background: #f5f8fc; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.col-Course { width: 13ch; max-width: 13ch; overflow: hidden; text-overflow: ellipsis; }
+.col-Horse { width: 16ch; max-width: 16ch; overflow: hidden; text-overflow: ellipsis; }
+.col-Time { width: 4ch; max-width: 4ch; text-align: center; }
+.col-Dist { width: 4ch; max-width: 4ch; text-align: center; }
+.col-Class { width: 4ch; max-width: 4ch; text-align: center; }
+.col-Run { width: 3ch; max-width: 3ch; text-align: right; }
+.col-Odds { width: 5ch; max-width: 5ch; text-align: right; }
+.col-Perc, .col-DildexRank { width: 3ch; max-width: 3ch; text-align: right; }
+.col-Dildex1vs2 { width: 5ch; max-width: 5ch; text-align: right; }
+.col-H_JT_Rank, .col-PRB_Horse_placepct, .col-PRB_Jockey_Trainer_placepct { width: 5ch; max-width: 5ch; text-align: right; }
+.col-Dildex { width: 102px; max-width: 102px; }
+.dildex-wrap { display: flex; align-items: center; gap: 4px; }
+.dildex-bar-bg { width: 58px; height: 6px; background: #ffffff; border-radius: 3px; overflow: hidden; }
+.dildex-bar { height: 100%; }
+.dildex-value { width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<h1>Favourites <span class="title-date">2026-07-12</span></h1>
+
+<div class="controls">
+<label for="raceSelect">RaceTime / RaceMeet:</label>
+<select id="raceSelect" multiple>
+<option value="1310 - Sligo (IRE)">1310 - Sligo (IRE)</option><option value="1340 - Sligo (IRE)">1340 - Sligo (IRE)</option><option value="1350 - Stratford">1350 - Stratford</option><option value="1400 - Dundalk (IRE)">1400 - Dundalk (IRE)</option><option value="1406 - Perth">1406 - Perth</option><option value="1415 - Sligo (IRE)">1415 - Sligo (IRE)</option><option value="1425 - Stratford">1425 - Stratford</option><option value="1435 - Dundalk (IRE)">1435 - Dundalk (IRE)</option><option value="1441 - Perth">1441 - Perth</option><option value="1450 - Sligo (IRE)">1450 - Sligo (IRE)</option><option value="1500 - Stratford">1500 - Stratford</option><option value="1510 - Dundalk (IRE)">1510 - Dundalk (IRE)</option><option value="1516 - Perth">1516 - Perth</option><option value="1525 - Sligo (IRE)">1525 - Sligo (IRE)</option><option value="1535 - Stratford">1535 - Stratford</option><option value="1545 - Dundalk (IRE)">1545 - Dundalk (IRE)</option><option value="1551 - Perth">1551 - Perth</option><option value="1600 - Sligo (IRE)">1600 - Sligo (IRE)</option><option value="1610 - Stratford">1610 - Stratford</option><option value="1620 - Dundalk (IRE)">1620 - Dundalk (IRE)</option><option value="1626 - Perth">1626 - Perth</option><option value="1635 - Sligo (IRE)">1635 - Sligo (IRE)</option><option value="1645 - Stratford">1645 - Stratford</option><option value="1655 - Dundalk (IRE)">1655 - Dundalk (IRE)</option><option value="1701 - Perth">1701 - Perth</option><option value="1710 - Sligo (IRE)">1710 - Sligo (IRE)</option><option value="1720 - Stratford">1720 - Stratford</option><option value="1730 - Dundalk (IRE)">1730 - Dundalk (IRE)</option>
+</select>
+<button onclick="clearFilter()">All</button>
+</div>
+
+<div class="perc-filter">
+<label>Dildex1vs2:</label>
+<div class="range-wrap">
+<input id="d1v2Min" type="range" min="0.000" max="0.137" step="0.001" value="0.000">
+<input id="d1v2Max" type="range" min="0.000" max="0.137" step="0.001" value="0.137">
+</div>
+<span id="d1v2Text">0.000 - 0.137</span>
+<label class="top-rank-filter">
+<input id="topHJTOnly" type="checkbox">
+Top H+JT#
+</label>
+</div>
+
+<div class="table-wrap">
+<table id="raceTable">
+<thead>
+<tr>
+<th class="col-Course">Meet</th><th class="col-Time">Time</th><th class="col-Class">Class</th><th class="col-Dist">L</th><th class="col-Horse">Horse</th><th class="col-Run">Run</th><th class="col-Odds">Ante</th><th class="col-Perc">%</th><th class="col-DildexRank">DR</th><th class="col-Dildex">Dildex</th><th class="col-Dildex1vs2">D1v2</th><th class="col-PRB_Horse_placepct">H_Pct</th><th class="col-PRB_Jockey_Trainer_placepct">JT_Pct</th><th class="col-H_JT_Rank">H+JT#</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<script>
+const rows = [{"race_filter": "1310 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1310", "Class": "", "Dist": "2m 1f", "Horse": "Manoir De Mirande (FR)", "Run": 12, "Odds": 2.0, "Perc": 71, "DildexRank": 1, "Dildex": 0.641, "Dildex1vs2": 0.073, "PRB_Horse_placepct": 40, "PRB_Jockey_Trainer_placepct": 45, "H_JT_Rank": 1}, {"race_filter": "1340 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1340", "Class": "", "Dist": "2m 1f", "Horse": "Returning Officer (FR)", "Run": 12, "Odds": 2.25, "Perc": 58, "DildexRank": 1, "Dildex": 0.61, "Dildex1vs2": 0.082, "PRB_Horse_placepct": 29, "PRB_Jockey_Trainer_placepct": 45, "H_JT_Rank": 1}, {"race_filter": "1350 - Stratford", "Course": "Stratford", "Time": "1350", "Class": "4", "Dist": "2m", "Horse": "Lucky Sevens", "Run": 4, "Odds": 1.0, "Perc": 23, "DildexRank": 1, "Dildex": 0.577, "Dildex1vs2": 0.004, "PRB_Horse_placepct": 31, "PRB_Jockey_Trainer_placepct": 40, "H_JT_Rank": 2}, {"race_filter": "1400 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1400", "Class": "", "Dist": "5f", "Horse": "Ipanema Queen", "Run": 10, "Odds": 3.0, "Perc": 86, "DildexRank": 1, "Dildex": 0.614, "Dildex1vs2": 0.02, "PRB_Horse_placepct": 35, "PRB_Jockey_Trainer_placepct": 30, "H_JT_Rank": 2}, {"race_filter": "1406 - Perth", "Course": "Perth", "Time": "1406", "Class": "4", "Dist": "2m 4f", "Horse": "Moi Mon Vieux (FR)", "Run": 5, "Odds": 7.0, "Perc": 77, "DildexRank": 1, "Dildex": 0.611, "Dildex1vs2": 0.028, "PRB_Horse_placepct": 34, "PRB_Jockey_Trainer_placepct": 16, "H_JT_Rank": 2}, {"race_filter": "1415 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1415", "Class": "", "Dist": "2m 1f", "Horse": "Kenisa Sport (FR)", "Run": 10, "Odds": 2.5, "Perc": 96, "DildexRank": 1, "Dildex": 0.675, "Dildex1vs2": 0.137, "PRB_Horse_placepct": 40, "PRB_Jockey_Trainer_placepct": 27, "H_JT_Rank": 1}, {"race_filter": "1425 - Stratford", "Course": "Stratford", "Time": "1425", "Class": "5", "Dist": "2m 6f", "Horse": "Son Of Tyran", "Run": 8, "Odds": 2.0, "Perc": 34, "DildexRank": 1, "Dildex": 0.53, "Dildex1vs2": 0.009, "PRB_Horse_placepct": 17, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 3}, {"race_filter": "1435 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1435", "Class": "", "Dist": "7f", "Horse": "Kc Bear", "Run": 11, "Odds": 3.5, "Perc": 80, "DildexRank": 1, "Dildex": 0.592, "Dildex1vs2": 0.005, "PRB_Horse_placepct": 35, "PRB_Jockey_Trainer_placepct": 30, "H_JT_Rank": 2}, {"race_filter": "1441 - Perth", "Course": "Perth", "Time": "1441", "Class": "4", "Dist": "2m", "Horse": "Conquer The Breeze", "Run": 6, "Odds": 1.1, "Perc": 45, "DildexRank": 1, "Dildex": 0.547, "Dildex1vs2": 0.014, "PRB_Horse_placepct": 27, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 2}, {"race_filter": "1450 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1450", "Class": "", "Dist": "2m 1f", "Horse": "Wolf Prince", "Run": 12, "Odds": 7.0, "Perc": 98, "DildexRank": 1, "Dildex": 0.676, "Dildex1vs2": 0.086, "PRB_Horse_placepct": 27, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 1}, {"race_filter": "1500 - Stratford", "Course": "Stratford", "Time": "1500", "Class": "5", "Dist": "2m 6f", "Horse": "Laffer Curve", "Run": 10, "Odds": 1.5, "Perc": 69, "DildexRank": 1, "Dildex": 0.605, "Dildex1vs2": 0.083, "PRB_Horse_placepct": 32, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 1}, {"race_filter": "1510 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1510", "Class": "", "Dist": "1m", "Horse": "Krasimir", "Run": 10, "Odds": 1.5, "Perc": 87, "DildexRank": 1, "Dildex": 0.68, "Dildex1vs2": 0.03, "PRB_Horse_placepct": 42, "PRB_Jockey_Trainer_placepct": 42, "H_JT_Rank": 2}, {"race_filter": "1516 - Perth", "Course": "Perth", "Time": "1516", "Class": "4", "Dist": "2m 4f", "Horse": "Atlantic City", "Run": 9, "Odds": 2.25, "Perc": 84, "DildexRank": 1, "Dildex": 0.619, "Dildex1vs2": 0.031, "PRB_Horse_placepct": 31, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 1}, {"race_filter": "1525 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1525", "Class": "", "Dist": "2m 4f", "Horse": "Mickey Cohen", "Run": 18, "Odds": 3.0, "Perc": 76, "DildexRank": 1, "Dildex": 0.592, "Dildex1vs2": 0.061, "PRB_Horse_placepct": 30, "PRB_Jockey_Trainer_placepct": 33, "H_JT_Rank": 1}, {"race_filter": "1535 - Stratford", "Course": "Stratford", "Time": "1535", "Class": "4", "Dist": "2m", "Horse": "Genealogy", "Run": 7, "Odds": 1.88, "Perc": 37, "DildexRank": 1, "Dildex": 0.575, "Dildex1vs2": 0.031, "PRB_Horse_placepct": 31, "PRB_Jockey_Trainer_placepct": 36, "H_JT_Rank": 1}, {"race_filter": "1545 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1545", "Class": "", "Dist": "1m", "Horse": "Kitty Bear", "Run": 17, "Odds": 14.0, "Perc": 95, "DildexRank": 1, "Dildex": 0.6, "Dildex1vs2": 0.043, "PRB_Horse_placepct": 32, "PRB_Jockey_Trainer_placepct": 34, "H_JT_Rank": 1}, {"race_filter": "1551 - Perth", "Course": "Perth", "Time": "1551", "Class": "3", "Dist": "2m 7f", "Horse": "Grand Clermont (FR)", "Run": 7, "Odds": 5.0, "Perc": 92, "DildexRank": 1, "Dildex": 0.637, "Dildex1vs2": 0.04, "PRB_Horse_placepct": 36, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 1}, {"race_filter": "1600 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1600", "Class": "", "Dist": "2m 4f", "Horse": "Go To Town", "Run": 18, "Odds": 5.0, "Perc": 57, "DildexRank": 1, "Dildex": 0.543, "Dildex1vs2": 0.04, "PRB_Horse_placepct": 34, "PRB_Jockey_Trainer_placepct": 23, "H_JT_Rank": 1}, {"race_filter": "1610 - Stratford", "Course": "Stratford", "Time": "1610", "Class": "5", "Dist": "2m 3f", "Horse": "Definite Dream", "Run": 7, "Odds": 5.0, "Perc": 95, "DildexRank": 1, "Dildex": 0.652, "Dildex1vs2": 0.081, "PRB_Horse_placepct": 34, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 1}, {"race_filter": "1620 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1620", "Class": "", "Dist": "1m 4f", "Horse": "Rising Sky", "Run": 13, "Odds": 25.0, "Perc": 91, "DildexRank": 1, "Dildex": 0.56, "Dildex1vs2": 0.008, "PRB_Horse_placepct": 30, "PRB_Jockey_Trainer_placepct": 32, "H_JT_Rank": 4}, {"race_filter": "1626 - Perth", "Course": "Perth", "Time": "1626", "Class": "4", "Dist": "2m 7f", "Horse": "Secret Trix", "Run": 7, "Odds": 3.0, "Perc": 79, "DildexRank": 1, "Dildex": 0.6, "Dildex1vs2": 0.018, "PRB_Horse_placepct": 24, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 2}, {"race_filter": "1635 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1635", "Class": "", "Dist": "3m 1f", "Horse": "Sphagnum", "Run": 17, "Odds": 4.5, "Perc": 80, "DildexRank": 1, "Dildex": 0.589, "Dildex1vs2": 0.033, "PRB_Horse_placepct": 24, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 2}, {"race_filter": "1645 - Stratford", "Course": "Stratford", "Time": "1645", "Class": "4", "Dist": "2m 2f", "Horse": "Edelak", "Run": 5, "Odds": 0.62, "Perc": 95, "DildexRank": 1, "Dildex": 0.655, "Dildex1vs2": 0.054, "PRB_Horse_placepct": 36, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 1}, {"race_filter": "1655 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1655", "Class": "", "Dist": "1m 2f", "Horse": "Reynir", "Run": 6, "Odds": 0.67, "Perc": 55, "DildexRank": 1, "Dildex": 0.64, "Dildex1vs2": 0.12, "PRB_Horse_placepct": 42, "PRB_Jockey_Trainer_placepct": 43, "H_JT_Rank": 1}, {"race_filter": "1701 - Perth", "Course": "Perth", "Time": "1701", "Class": "5", "Dist": "2m", "Horse": "Centurion's Sister", "Run": 8, "Odds": 2.5, "Perc": 85, "DildexRank": 1, "Dildex": 0.621, "Dildex1vs2": 0.088, "PRB_Horse_placepct": 22, "PRB_Jockey_Trainer_placepct": 35, "H_JT_Rank": 2}, {"race_filter": "1710 - Sligo (IRE)", "Course": "Sligo (IRE)", "Time": "1710", "Class": "", "Dist": "2m 2f", "Horse": "Churchfield Annie", "Run": 12, "Odds": 3.0, "Perc": 73, "DildexRank": 1, "Dildex": 0.62, "Dildex1vs2": 0.019, "PRB_Horse_placepct": 36, "PRB_Jockey_Trainer_placepct": 40, "H_JT_Rank": 1}, {"race_filter": "1720 - Stratford", "Course": "Stratford", "Time": "1720", "Class": "5", "Dist": "2m 2f", "Horse": "Miss Kassiopi", "Run": 9, "Odds": 0.8, "Perc": 70, "DildexRank": 1, "Dildex": 0.614, "Dildex1vs2": 0.09, "PRB_Horse_placepct": 30, "PRB_Jockey_Trainer_placepct": 37, "H_JT_Rank": 1}, {"race_filter": "1730 - Dundalk (IRE)", "Course": "Dundalk (IRE)", "Time": "1730", "Class": "", "Dist": "1m 2f", "Horse": "Forthill (FR)", "Run": 6, "Odds": 1.5, "Perc": 80, "DildexRank": 1, "Dildex": 0.661, "Dildex1vs2": 0.073, "PRB_Horse_placepct": 39, "PRB_Jockey_Trainer_placepct": 42, "H_JT_Rank": 1}];
+const displayCols = ["Course", "Time", "Class", "Dist", "Horse", "Run", "Odds", "Perc", "DildexRank", "Dildex", "Dildex1vs2", "PRB_Horse_placepct", "PRB_Jockey_Trainer_placepct", "H_JT_Rank"];
+const dildexMax = 1.0;
+
+function interpolateColor(c1, c2, t) {
+    const r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+    const g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+    const b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+function dildexColor(value) {
+    const blue = [31, 78, 121];
+    const grey = [240, 240, 240];
+    const red = [130, 20, 20];
+    const v = Math.max(0, Math.min(dildexMax, value));
+    if (v <= 1.5) return interpolateColor(blue, grey, v / 1.5);
+    return interpolateColor(grey, red, (v - 1.5) / 1.5);
+}
+
+function renderDildex(value) {
+    const num = parseFloat(value);
+    if (isNaN(num)) return "";
+    const clipped = Math.max(0, Math.min(dildexMax, num));
+    const pct = (clipped / dildexMax) * 100;
+    const color = dildexColor(clipped);
+    return `
+        <div class="dildex-wrap">
+            <div class="dildex-bar-bg">
+                <div class="dildex-bar" style="width: ${pct}%; background: ${color};"></div>
+            </div>
+            <div class="dildex-value">${num.toFixed(3)}</div>
+        </div>
+    `;
+}
+
+function getD1v2Range() {
+    const minInput = document.getElementById("d1v2Min");
+    const maxInput = document.getElementById("d1v2Max");
+    let minValue = parseFloat(minInput.value);
+    let maxValue = parseFloat(maxInput.value);
+    if (minValue > maxValue) {
+        if (document.activeElement === minInput) maxValue = minValue;
+        else minValue = maxValue;
+    }
+    minInput.value = minValue.toFixed(3);
+    maxInput.value = maxValue.toFixed(3);
+    document.getElementById("d1v2Text").textContent = `${minValue.toFixed(3)} - ${maxValue.toFixed(3)}`;
+    return [minValue, maxValue];
+}
+
+function renderTable() {
+    const selected = Array.from(document.getElementById("raceSelect").selectedOptions).map(option => option.value);
+    const [minD1v2, maxD1v2] = getD1v2Range();
+    const topHJTOnly = document.getElementById("topHJTOnly").checked;
+    const tbody = document.querySelector("#raceTable tbody");
+    tbody.innerHTML = "";
+    const filteredRows = rows.filter(row => {
+        const raceOk = selected.length === 0 || selected.includes(row.race_filter);
+        const d1v2 = parseFloat(row.Dildex1vs2);
+        const d1v2Ok = isNaN(d1v2)
+            ? minD1v2 === 0.000 && maxD1v2 === 0.137
+            : d1v2 >= minD1v2 && d1v2 <= maxD1v2;
+        const hjtRank = parseFloat(row.H_JT_Rank);
+        const topHJTOk = !topHJTOnly || hjtRank === 1;
+        return raceOk && d1v2Ok && topHJTOk;
+    });
+    let currentRace = null;
+    let raceIndex = -1;
+    filteredRows.forEach(row => {
+        if (row.race_filter !== currentRace) {
+            currentRace = row.race_filter;
+            raceIndex += 1;
+        }
+        const tr = document.createElement("tr");
+        tr.className = raceIndex % 2 === 0 ? "race-even" : "race-odd";
+        displayCols.forEach(col => {
+            const td = document.createElement("td");
+            td.classList.add(`col-${col}`);
+            if (col === "Dildex") {
+                td.innerHTML = renderDildex(row[col]);
+            } else {
+                td.textContent = row[col];
+                if (!isNaN(parseFloat(row[col])) && isFinite(row[col])) td.classList.add("num");
+            }
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+}
+
+function clearFilter() {
+    const select = document.getElementById("raceSelect");
+    Array.from(select.options).forEach(option => option.selected = false);
+    renderTable();
+}
+
+document.getElementById("raceSelect").addEventListener("change", renderTable);
+document.getElementById("d1v2Min").addEventListener("input", renderTable);
+document.getElementById("d1v2Max").addEventListener("input", renderTable);
+document.getElementById("topHJTOnly").addEventListener("change", renderTable);
+renderTable();
+</script>
+</body>
+</html>
