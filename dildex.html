@@ -162,6 +162,7 @@
         <button class="nav-button" type="button" data-view="scatter">Scatter</button>
       </div>
     </nav>
+
     <section class="content">
       <iframe class="viewer" id="viewer" title="Selected race view"></iframe>
       <div class="status" id="status" role="status" aria-live="polite"></div>
@@ -172,11 +173,11 @@
     const views = {
       card: {
         label: "Card",
-        url: "https://richsdixon.github.io/horses/todays_races.html"
+        url: "https://dildex.staticdomains.app/todays_races.html"
       },
       scatter: {
         label: "Scatter",
-        url: "https://richsdixon.github.io/horses/dildex_scatter_today.html"
+        url: "https://dildex.staticdomains.app/dildex_scatter_today.html"
       }
     };
 
@@ -187,8 +188,18 @@
 
     function cacheBustedUrl(rawUrl) {
       const url = new URL(rawUrl, window.location.href);
-      url.searchParams.set("refresh", Date.now().toString());
+      url.searchParams.set("v", Date.now().toString());
+      url.searchParams.set("cache", Math.random().toString(36).slice(2));
       return url.toString();
+    }
+
+    function hardRefreshIframe(rawUrl) {
+      viewer.removeAttribute("src");
+      viewer.src = "about:blank";
+
+      window.setTimeout(() => {
+        viewer.src = cacheBustedUrl(rawUrl);
+      }, 25);
     }
 
     function showStatus(message) {
@@ -209,18 +220,23 @@
 
     function loadView(viewName) {
       const view = views[viewName] || views.card;
-      setActiveButton(viewName);
-      viewer.src = cacheBustedUrl(view.url);
-      window.history.replaceState(null, "", `#${viewName}`);
+      const resolvedViewName = views[viewName] ? viewName : "card";
+
+      setActiveButton(resolvedViewName);
+      hardRefreshIframe(view.url);
+      window.history.replaceState(null, "", `#${resolvedViewName}`);
       showStatus(`${view.label} refreshed`);
     }
 
     buttons.forEach((button) => {
-      button.addEventListener("click", () => loadView(button.dataset.view));
+      button.addEventListener("click", () => {
+        loadView(button.dataset.view);
+      });
     });
 
     const initialView = window.location.hash.slice(1);
     const initialViewName = views[initialView] ? initialView : "card";
+
     loadView(initialViewName);
   </script>
 </body>
